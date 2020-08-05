@@ -6,24 +6,21 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.telcomsis.navigationexample.databinding.NewNoteBinding;
 
 import java.util.Iterator;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link newNote#newInstance} factory method to
+ * Use the {@link SecondFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class newNote extends Fragment {
-    private static final String TAG = "newNote";
+public class SecondFragment extends Fragment {
+    private static final String TAG = "SecondFragment";
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -32,12 +29,9 @@ public class newNote extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private AppViewModel viewModel;
-    private NewNoteBinding binding;
-    private NavController navController;
 
-    public newNote() {
+    public SecondFragment() {
         // Required empty public constructor
     }
 
@@ -47,11 +41,11 @@ public class newNote extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment newNote.
+     * @return A new instance of fragment SecondFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static newNote newInstance(String param1, String param2) {
-        newNote fragment = new newNote();
+    public static SecondFragment newInstance(String param1, String param2) {
+        SecondFragment fragment = new SecondFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -72,25 +66,22 @@ public class newNote extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.new_note, container, false);
+        return inflater.inflate(R.layout.second_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        binding = NewNoteBinding.bind(view);
         viewModel = new ViewModelProvider(requireActivity()).get(AppViewModel.class);
-        navController = Navigation.findNavController(view);
-        binding.btnAdd.setOnClickListener(view1 -> viewModel.addNote(binding.input.getText().toString()));
-        viewModel.getLiveDataObject().observe(getViewLifecycleOwner(), valor -> {
-            Iterator<String> iteretor = valor.iterator();
-            String texto = "";
-            while(iteretor.hasNext()){
-                texto = texto+"\n"+iteretor.next();
+        viewModel.getLiveDataObject().observe(getViewLifecycleOwner(), lista -> {
+            if(lista!=null){
+                Iterator<String> iteretor = lista.iterator();
+                String texto = "";
+                while(iteretor.hasNext()){
+                    texto = texto+"\n"+iteretor.next();
+                }
+                Log.d(TAG, "onViewCreated: los valores de lista son: "+texto);
             }
-            binding.textView.setText(texto);
         });
-        binding.btnNext.setOnClickListener(v -> navController.navigate(R.id.action_to_secondFragment));
-
     }
 }
